@@ -25,7 +25,7 @@ public class KohiSop {
         DAFTAR_MENU.add(new Makanan("S3", "Tempe Mendoan", 18000));
         DAFTAR_MENU.add(new Makanan("S4", "Tahu Bakso Extra Telur", 28000));
 
-        // Sort menu: Makanan first, then Minuman. Within category, sort by code alphabetically.
+        // sort menu makanan dan minuman
         DAFTAR_MENU.sort((m1, m2) -> {
             int catCompare = m1.getKategori().compareTo(m2.getKategori());
             if (catCompare != 0) {
@@ -35,10 +35,9 @@ public class KohiSop {
         });
     }
 
-    // Database member
+    // database member
     private static final List<Member> DATABASE_MEMBER = new ArrayList<>();
     static {
-        // Pre-populate database member
         DATABASE_MEMBER.add(new Member("A23FB9", "Budi", 150));
         DATABASE_MEMBER.add(new Member("C78DE1", "Andi", 50));
     }
@@ -120,7 +119,7 @@ public class KohiSop {
         pesanan.removeIf(ip -> ip.getKuantitas() <= 0);
     }
 
-    // Urutkan pesanan: Makanan first, then Minuman. sorted by unit price ascending.
+    // urutkan pesanan dari yg terkecil
     public void urutkanPesanan() {
         pesanan.sort((ip1, ip2) -> {
             int catCompare = ip1.getMenu().getKategori().compareTo(ip2.getMenu().getKategori());
@@ -143,10 +142,7 @@ public class KohiSop {
         System.out.println("-".repeat(58));
         for (Menu m : DAFTAR_MENU) {
             if (m instanceof Makanan) {
-                System.out.printf("%-4s | %-36s | Rp %,d%n",
-                    m.getKode(),
-                    m.getNamaMenu(),
-                    m.getHarga());
+                System.out.printf("%-4s | %-36s | Rp %,d%n", m.getKode(), m.getNamaMenu(), m.getHarga());
             }
         }
 
@@ -157,10 +153,7 @@ public class KohiSop {
         System.out.println("-".repeat(58));
         for (Menu m : DAFTAR_MENU) {
             if (m instanceof Minuman) {
-                System.out.printf("%-4s | %-36s | Rp %,d%n",
-                    m.getKode(),
-                    m.getNamaMenu(),
-                    m.getHarga());
+                System.out.printf("%-4s | %-36s | Rp %,d%n", m.getKode(), m.getNamaMenu(), m.getHarga());
             }
         }
         System.out.println(garis);

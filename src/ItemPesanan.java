@@ -15,11 +15,21 @@ public class ItemPesanan {
     public void setKuantitas(int kuantitas) { 
         this.kuantitas = kuantitas; 
     }
+    private boolean bebasPajak = false;
+
+    public void setBebasPajak(boolean bebasPajak) {
+        this.bebasPajak = bebasPajak;
+    }
+
+    public boolean isBebasPajak() {
+        return bebasPajak;
+    }
+
     public int getTotalHarga() {
         return menu.getHarga() * kuantitas;
     }
     public double getPajak() {
-        return Pajak.hitungPajak(menu, getTotalHarga());
+        return Pajak.hitungPajak(menu, getTotalHarga(), bebasPajak);
     }
     public double getTotalDenganPajak() {
         return getTotalHarga() + getPajak();

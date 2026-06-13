@@ -201,6 +201,12 @@ public class App {
             return;
         }
 
+        // bebas pajak jika sudah member dan ada kode A
+        boolean bebasPajak = (member != null && !memberBaru && member.getKode().toUpperCase().contains("A"));
+        for (int i = 0; i < kohiSop.getJumlahPesanan(); i++) {
+            kohiSop.getPesanan(i).setBebasPajak(bebasPajak);
+        }
+
         // detail pesanan dan hitung total sementara
         System.out.println("\n[Detail Pesanan]");
         double totalSementara = 0;

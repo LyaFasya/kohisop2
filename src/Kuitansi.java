@@ -1,5 +1,19 @@
 public class Kuitansi {
     public static void cetak(KohiSop kohiSop, ChannelPembayaran channel, MataUang mataUang, Member member) {
+        boolean sudahMember = false;
+        if (member != null) {
+            for (Member m : KohiSop.getDatabaseMember()) {
+                if (m.getKode().equalsIgnoreCase(member.getKode())) {
+                    sudahMember = true;
+                    break;
+                }
+            }
+        }
+        boolean bebasPajak = sudahMember && member.getKode().toUpperCase().contains("A");
+        for (int i = 0; i < kohiSop.getJumlahPesanan(); i++) {
+            kohiSop.getPesanan(i).setBebasPajak(bebasPajak);
+        }
+
         System.out.println("\n=======================================================");
         System.out.println("                   KUITANSI PEMBELIAN");
         System.out.println("=======================================================");
@@ -46,7 +60,7 @@ public class Kuitansi {
         double totalAkhirKonversi = mataUang.konversiDariIDR(totalAkhirIDR);
         double totalLuarPajakKonversi = mataUang.konversiDariIDR(totalHargaLuarPajak);
 
-        // Hitung poin member
+        // hitung poin member
         int poinSebelum = member.getPoin();
         int poinDiperoleh = (int) (totalAkhirIDR / 10);
         boolean doublePoin = member.getKode().toUpperCase().contains("A");
@@ -65,12 +79,12 @@ public class Kuitansi {
         System.out.printf("%-36s : Rp %,12.0f%n", "Biaya Admin", admin);
         System.out.println("-------------------------------------------------------");
         
-        // Total tagihan sebelum pajak, diskon, admin dengan mata uang terpilih
+        // total tagihan awal
         System.out.printf("%-36s : %s %,12.2f%n", "Total Tagihan Awal (" + mataUang.getKode() + ")", 
             mataUang.getKode(), totalLuarPajakKonversi);
         System.out.println("-------------------------------------------------------");
         
-        // Poin Member
+        // poin member
         System.out.printf("%-36s : %s (Kode: %s)%n", "Nama Member", member.getNama(), member.getKode());
         System.out.printf("%-36s : %d%n", "Poin Sebelum Transaksi", poinSebelum);
         System.out.printf("%-36s : %d%n", "Poin Diperoleh", poinDiperoleh);
@@ -80,7 +94,7 @@ public class Kuitansi {
         System.out.printf("%-36s : %d%n", "Poin Setelah Transaksi", poinSetelah);
         System.out.println("-------------------------------------------------------");
 
-        // Total tagihan akhir dengan mata uang terpilih
+        // total tagihan akhir
         System.out.printf("%-36s : Rp %,12.0f%n", "Total Tagihan Akhir (IDR)", totalAkhirIDR);
         if (!mataUang.getKode().equals("IDR")) {
             System.out.printf("%-36s : %s %,12.2f%n", "Total Tagihan Akhir (" + mataUang.getKode() + ")", 

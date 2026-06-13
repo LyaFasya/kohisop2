@@ -31,7 +31,7 @@ public class Member {
         this.poin += poinBaru;
     }
 
-    // Static helper to generate a 6-character alphanumeric code consisting of A-F and 0-9
+    // generate random kode member
     public static String generateRandomCode() {
         String chars = "ABCDEF0123456789";
         Random random = new Random();

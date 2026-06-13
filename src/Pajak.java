@@ -1,7 +1,14 @@
 public class Pajak {
     public static double hitungPajak(Menu menu, int totalHarga) {
+        return hitungPajak(menu, totalHarga, false);
+    }
+
+    public static double hitungPajak(Menu menu, int totalHarga, boolean bebasPajak) {
+        if (bebasPajak) {
+            return 0.0;
+        }
         if (menu instanceof Makanan) {
-            // >50  dapat diskon 8% dan <=50 dapat diskon 11%.
+            // >50 dapat diskon 8% dan <=50 dapat diskon 11%.
             if (menu.getHarga() > 50000) {
                 return totalHarga * 0.08;
             } else {
