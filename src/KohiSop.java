@@ -153,6 +153,10 @@ public class KohiSop {
     public int getJumlahPesanan() {
         return pesanan.size();
     }
+    
+    public ArrayList<ItemPesanan> getDaftarPesanan() {
+    return new ArrayList<>(pesanan);
+}
 
     public boolean pesananKosong() {
         return pesanan.isEmpty();

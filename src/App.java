@@ -375,10 +375,21 @@ public class App {
 
         // cetak kuitansi
         Kuitansi.cetak(kohiSop, channel, mataUang, member);
-        if (memberBaru) {
-            KohiSop.daftarMemberBaru(member);
-        } else {
-            KohiSop.saveDatabaseMember();
-        }
+
+        // =========================
+       // PROSES PESANAN TIM DAPUR
+      // =========================
+    Dapur Dapur = new Dapur();
+
+    Dapur.tambahPesanan(kohiSop.getDaftarPesanan());
+
+    Dapur.prosesPesanan();
+
+    if (memberBaru) {
+    KohiSop.daftarMemberBaru(member);
+    } else {
+    KohiSop.saveDatabaseMember();
+
+       }
     }
 }
