@@ -109,12 +109,12 @@ public class Kuitansi {
         System.out.printf("%-36s : %d%n", "Poin Sebelum Transaksi", poinSebelum);
         if (sudahMember && mataUang.getKode().equals("IDR")) {
             if (poinSebelum > 0) {
-                System.out.printf("%-36s : %s%n", "Info Poin", "Dapat digunakan (IDR).");
+                System.out.printf("%-36s : %s%n", "Info Poin", "Dapat digunakan.");
             } else {
                 System.out.printf("%-36s : %s%n", "Info Poin", "Tidak ada poin.");
             }
         } else if (sudahMember && !mataUang.getKode().equals("IDR")) {
-            System.out.printf("%-36s : %s%n", "Info Poin", "Tidak dapat digunakan (bukan IDR).");
+            System.out.printf("%-36s : %s%n", "Info Poin", "Hanya untuk IDR.");
         }
         if (potonganPoin > 0) {
             System.out.printf("%-36s : Rp %,12.0f%n", "Pemotongan Poin (" + poinYangDigunakan + " poin)", potonganPoin);

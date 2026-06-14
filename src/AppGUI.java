@@ -62,24 +62,43 @@ public class AppGUI {
         JPanel panel = new JPanel(new BorderLayout(10, 10));
         panel.setBorder(new EmptyBorder(20, 20, 20, 20));
         
-        JLabel lblHeader = new JLabel("Langkah 1 dari 5: Input Pelanggan", SwingConstants.CENTER);
-        lblHeader.setFont(new Font("Arial", Font.BOLD, 16));
-        panel.add(lblHeader, BorderLayout.NORTH);
-
-        JPanel center = new JPanel(new GridLayout(3, 1, 10, 10));
+        JPanel center = new JPanel();
+        center.setLayout(new BoxLayout(center, BoxLayout.Y_AXIS));
         
-        JPanel rowNama = new JPanel(new FlowLayout());
-        rowNama.add(new JLabel("Nama Pelanggan:"));
+        center.add(Box.createVerticalStrut(60));
+        
+        JLabel lblTitle = new JLabel("Kohisop");
+        lblTitle.setFont(new Font("Arial", Font.BOLD, 36));
+        lblTitle.setAlignmentX(Component.CENTER_ALIGNMENT);
+        center.add(lblTitle);
+        
+        center.add(Box.createVerticalStrut(45));
+        
+        JPanel rowNama = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 0));
+        JLabel lblNama = new JLabel("Nama Pelanggan:");
+        lblNama.setFont(new Font("Arial", Font.PLAIN, 14));
         txtNama = new JTextField(txtNama == null ? "" : txtNama.getText(), 20);
+        txtNama.setFont(new Font("Arial", Font.PLAIN, 14));
+        rowNama.add(lblNama);
         rowNama.add(txtNama);
+        rowNama.setMaximumSize(new Dimension(500, 35));
+        rowNama.setAlignmentX(Component.CENTER_ALIGNMENT);
         center.add(rowNama);
 
-        JLabel lblStatus = new JLabel("Masukkan nama untuk mendeteksi status member.", SwingConstants.CENTER);
+        center.add(Box.createVerticalStrut(30));
+
+        JLabel lblStatus = new JLabel("Masukkan nama untuk mendeteksi status member.");
+        lblStatus.setFont(new Font("Arial", Font.BOLD, 13));
+        lblStatus.setAlignmentX(Component.CENTER_ALIGNMENT);
         center.add(lblStatus);
 
-        JLabel lblNotice = new JLabel("Non-member otomatis didaftarkan setelah transaksi.", SwingConstants.CENTER);
+        center.add(Box.createVerticalStrut(40));
+
+        JLabel lblNotice = new JLabel("Non-member otomatis didaftarkan setelah transaksi.");
         lblNotice.setFont(new Font("Arial", Font.ITALIC, 11));
+        lblNotice.setAlignmentX(Component.CENTER_ALIGNMENT);
         center.add(lblNotice);
+        
         panel.add(center, BorderLayout.CENTER);
 
         Runnable checkMember = () -> {
@@ -107,8 +126,11 @@ public class AppGUI {
         checkMember.run();
 
         JPanel footer = new JPanel(new FlowLayout());
-        JButton btnBatal = new JButton("Batal");
-        btnBatal.addActionListener(e -> { txtNama.setText(""); checkMember.run(); });
+        JButton btnKeluar = new JButton("Keluar");
+        btnKeluar.addActionListener(e -> {
+            JOptionPane.showMessageDialog(window, "Terima kasih telah menggunakan KohiSop!");
+            System.exit(0);
+        });
         
         JButton btnLanjut = new JButton("Lanjut");
         btnLanjut.addActionListener(e -> {
@@ -137,7 +159,7 @@ public class AppGUI {
             showStep(2);
         });
 
-        footer.add(btnBatal);
+        footer.add(btnKeluar);
         footer.add(btnLanjut);
         panel.add(footer, BorderLayout.SOUTH);
         return panel;
@@ -147,8 +169,8 @@ public class AppGUI {
         JPanel panel = new JPanel(new BorderLayout(10, 10));
         panel.setBorder(new EmptyBorder(10, 10, 10, 10));
         
-        JLabel lblHeader = new JLabel("Langkah 2 dari 5: Pilih Menu", SwingConstants.CENTER);
-        lblHeader.setFont(new Font("Arial", Font.BOLD, 16));
+        JLabel lblHeader = new JLabel("Kohisop", SwingConstants.CENTER);
+        lblHeader.setFont(new Font("Arial", Font.BOLD, 20));
         panel.add(lblHeader, BorderLayout.NORTH);
 
         JPanel mainGrid = new JPanel(new GridLayout(1, 3, 10, 10));
@@ -173,11 +195,32 @@ public class AppGUI {
                 listSel.removeAll();
                 for (int i = 0; i < selectedItems.size(); i++) {
                     Menu m = selectedItems.get(i);
-                    JPanel row = new JPanel(new BorderLayout(5, 5));
-                    row.setMaximumSize(new Dimension(250, 30));
-                    row.add(new JLabel(m.getKode() + " - " + m.getNamaMenu()), BorderLayout.CENTER);
-                    JButton btnDel = new JButton("X");
-                    btnDel.setMargin(new Insets(2, 5, 2, 5));
+                    JPanel row = new JPanel();
+                    row.setLayout(new BoxLayout(row, BoxLayout.Y_AXIS));
+                    row.setBorder(BorderFactory.createCompoundBorder(
+                        BorderFactory.createMatteBorder(0, 0, 1, 0, Color.LIGHT_GRAY),
+                        BorderFactory.createEmptyBorder(5, 5, 5, 5)
+                    ));
+                    
+                    JLabel lblName = new JLabel(m.getKode() + " - " + m.getNamaMenu());
+                    lblName.setFont(new Font("Arial", Font.BOLD, 12));
+                    lblName.setAlignmentX(Component.LEFT_ALIGNMENT);
+                    row.add(lblName);
+                    
+                    row.add(Box.createVerticalStrut(2));
+                    
+                    JPanel bottomRow = new JPanel(new BorderLayout());
+                    bottomRow.setOpaque(false);
+                    bottomRow.setAlignmentX(Component.LEFT_ALIGNMENT);
+                    
+                    JLabel lblPrice = new JLabel(String.format("Rp%,d", m.getHarga()));
+                    lblPrice.setFont(new Font("Arial", Font.PLAIN, 12));
+                    bottomRow.add(lblPrice, BorderLayout.WEST);
+                    
+                    JButton btnDel = new JButton("Hapus");
+                    btnDel.setFont(new Font("Arial", Font.BOLD, 10));
+                    btnDel.setMargin(new Insets(1, 5, 1, 5));
+                    btnDel.setForeground(Color.RED);
                     btnDel.addActionListener(e -> {
                         int idx = selectedItems.indexOf(m);
                         if (idx != -1) {
@@ -186,7 +229,9 @@ public class AppGUI {
                             run();
                         }
                     });
-                    row.add(btnDel, BorderLayout.EAST);
+                    bottomRow.add(btnDel, BorderLayout.EAST);
+                    
+                    row.add(bottomRow);
                     listSel.add(row);
                 }
                 listSel.revalidate();
@@ -195,10 +240,31 @@ public class AppGUI {
         };
 
         for (Menu m : KohiSop.getDaftarMenu()) {
-            JPanel row = new JPanel(new BorderLayout(5, 5));
-            row.setMaximumSize(new Dimension(250, 30));
-            row.add(new JLabel(String.format("%s - %s (Rp%,d)", m.getKode(), m.getNamaMenu(), m.getHarga())), BorderLayout.CENTER);
-            JButton btnAdd = new JButton("Tambah");
+            JPanel row = new JPanel();
+            row.setLayout(new BoxLayout(row, BoxLayout.Y_AXIS));
+            row.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createMatteBorder(0, 0, 1, 0, Color.LIGHT_GRAY),
+                BorderFactory.createEmptyBorder(5, 5, 5, 5)
+            ));
+            
+            JLabel lblItem = new JLabel(m.getKode() + " - " + m.getNamaMenu());
+            lblItem.setFont(new Font("Arial", Font.BOLD, 12));
+            lblItem.setAlignmentX(Component.LEFT_ALIGNMENT);
+            row.add(lblItem);
+            
+            row.add(Box.createVerticalStrut(2));
+            
+            JPanel bottomRow = new JPanel(new BorderLayout());
+            bottomRow.setOpaque(false);
+            bottomRow.setAlignmentX(Component.LEFT_ALIGNMENT);
+            
+            JLabel lblPrice = new JLabel(String.format("Rp%,d", m.getHarga()));
+            lblPrice.setFont(new Font("Arial", Font.PLAIN, 12));
+            bottomRow.add(lblPrice, BorderLayout.WEST);
+            
+            JButton btnAdd = new JButton("+ Tambah");
+            btnAdd.setFont(new Font("Arial", Font.BOLD, 11));
+            btnAdd.setMargin(new Insets(2, 8, 2, 8));
             btnAdd.addActionListener(e -> {
                 if (selectedItems.contains(m)) {
                     JOptionPane.showMessageDialog(window, m.getNamaMenu() + " sudah dipilih.");
@@ -216,7 +282,10 @@ public class AppGUI {
                 selectedQtys.add(1);
                 refreshSelectedList.run();
             });
-            row.add(btnAdd, BorderLayout.EAST);
+            bottomRow.add(btnAdd, BorderLayout.EAST);
+            
+            row.add(bottomRow);
+            
             if (m instanceof Makanan) {
                 listFood.add(row);
             } else {
@@ -224,9 +293,9 @@ public class AppGUI {
             }
         }
 
-        pFood.add(new JScrollPane(listFood), BorderLayout.CENTER);
-        pDrink.add(new JScrollPane(listDrink), BorderLayout.CENTER);
-        pSelected.add(new JScrollPane(listSel), BorderLayout.CENTER);
+        pFood.add(new JScrollPane(listFood, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER), BorderLayout.CENTER);
+        pDrink.add(new JScrollPane(listDrink, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER), BorderLayout.CENTER);
+        pSelected.add(new JScrollPane(listSel, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER), BorderLayout.CENTER);
 
         mainGrid.add(pFood);
         mainGrid.add(pDrink);
@@ -260,15 +329,16 @@ public class AppGUI {
         JPanel panel = new JPanel(new BorderLayout(10, 10));
         panel.setBorder(new EmptyBorder(15, 15, 15, 15));
         
-        JLabel lblHeader = new JLabel("Langkah 3 dari 5: Kuantitas Pesanan", SwingConstants.CENTER);
-        lblHeader.setFont(new Font("Arial", Font.BOLD, 16));
+        JLabel lblHeader = new JLabel("Kohisop", SwingConstants.CENTER);
+        lblHeader.setFont(new Font("Arial", Font.BOLD, 20));
         panel.add(lblHeader, BorderLayout.NORTH);
 
         JPanel listPanel = new JPanel();
         listPanel.setLayout(new BoxLayout(listPanel, BoxLayout.Y_AXIS));
 
         JLabel lblSubtotal = new JLabel("", SwingConstants.CENTER);
-        lblSubtotal.setFont(new Font("Arial", Font.BOLD, 14));
+        lblSubtotal.setFont(new Font("Arial", Font.BOLD, 16));
+        lblSubtotal.setForeground(Color.BLUE);
 
         Runnable updateSubtotal = () -> {
             double total = 0;
@@ -321,21 +391,26 @@ public class AppGUI {
 
         updateSubtotal.run();
 
-        JPanel center = new JPanel(new BorderLayout(5, 5));
-        center.add(new JScrollPane(listPanel), BorderLayout.CENTER);
-        center.add(lblSubtotal, BorderLayout.SOUTH);
-        panel.add(center, BorderLayout.CENTER);
+        panel.add(new JScrollPane(listPanel, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER), BorderLayout.CENTER);
 
-        JPanel footer = new JPanel(new FlowLayout());
+        JPanel footer = new JPanel(new BorderLayout(5, 5));
+        footer.setBorder(BorderFactory.createEmptyBorder(10, 10, 5, 10));
+        
+        lblSubtotal.setHorizontalAlignment(SwingConstants.CENTER);
+        footer.add(lblSubtotal, BorderLayout.NORTH);
+
+        JPanel buttonsPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 15, 5));
         JButton btnBack = new JButton("Kembali");
         btnBack.addActionListener(e -> showStep(2));
         JButton btnBatal = new JButton("Batal");
         btnBatal.addActionListener(e -> { resetOrder(); showStep(1); });
         JButton btnNext = new JButton("Lanjut");
         btnNext.addActionListener(e -> showStep(4));
-        footer.add(btnBack);
-        footer.add(btnBatal);
-        footer.add(btnNext);
+        buttonsPanel.add(btnBack);
+        buttonsPanel.add(btnBatal);
+        buttonsPanel.add(btnNext);
+        footer.add(buttonsPanel, BorderLayout.SOUTH);
+        
         panel.add(footer, BorderLayout.SOUTH);
 
         return panel;
@@ -345,11 +420,11 @@ public class AppGUI {
         JPanel panel = new JPanel(new BorderLayout(10, 10));
         panel.setBorder(new EmptyBorder(15, 15, 15, 15));
         
-        JLabel lblHeader = new JLabel("Langkah 4 dari 5: Pembayaran", SwingConstants.CENTER);
-        lblHeader.setFont(new Font("Arial", Font.BOLD, 16));
+        JLabel lblHeader = new JLabel("Kohisop", SwingConstants.CENTER);
+        lblHeader.setFont(new Font("Arial", Font.BOLD, 20));
         panel.add(lblHeader, BorderLayout.NORTH);
 
-        JPanel body = new JPanel(new GridLayout(1, 2, 20, 20));
+        JPanel body = new JPanel(new GridLayout(1, 3, 15, 15));
 
         JPanel left = new JPanel();
         left.setLayout(new BoxLayout(left, BoxLayout.Y_AXIS));
@@ -368,39 +443,89 @@ public class AppGUI {
         left.add(rbTunai);
         left.add(rbQris);
         left.add(rbEmoney);
+        left.add(Box.createVerticalStrut(10));
 
-        JPanel rowSaldo = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        JPanel rowSaldo = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 0));
         rowSaldo.add(new JLabel("Saldo:"));
+        txtSaldo.setPreferredSize(new Dimension(100, 25));
         rowSaldo.add(txtSaldo);
+        rowSaldo.setMaximumSize(new Dimension(200, 30));
+        rowSaldo.setAlignmentX(Component.LEFT_ALIGNMENT);
         left.add(rowSaldo);
 
+        left.add(Box.createVerticalStrut(10));
         JLabel lblVerif = new JLabel("Pembayaran tunai tidak perlu cek saldo.");
+        lblVerif.setFont(new Font("Arial", Font.BOLD, 11));
+        lblVerif.setAlignmentX(Component.LEFT_ALIGNMENT);
         left.add(lblVerif);
+
+        JPanel middle = new JPanel();
+        middle.setLayout(new BoxLayout(middle, BoxLayout.Y_AXIS));
+        middle.setBorder(BorderFactory.createTitledBorder("Mata Uang & Kurs"));
+        
+        JPanel rowCur = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 0));
+        rowCur.add(new JLabel("Mata Uang:"));
+        cbCurrency.setPreferredSize(new Dimension(100, 25));
+        rowCur.add(cbCurrency);
+        rowCur.setMaximumSize(new Dimension(220, 30));
+        rowCur.setAlignmentX(Component.LEFT_ALIGNMENT);
+        middle.add(rowCur);
+        
+        middle.add(Box.createVerticalStrut(15));
+        JLabel lblKurs = new JLabel("Kurs Konversi:");
+        lblKurs.setFont(new Font("Arial", Font.BOLD, 12));
+        lblKurs.setAlignmentX(Component.LEFT_ALIGNMENT);
+        middle.add(lblKurs);
+        middle.add(Box.createVerticalStrut(5));
+        
+        JLabel kurs1 = new JLabel("- 1 USD = Rp 15");
+        kurs1.setAlignmentX(Component.LEFT_ALIGNMENT);
+        JLabel kurs2 = new JLabel("- 10 JPY = Rp 1");
+        kurs2.setAlignmentX(Component.LEFT_ALIGNMENT);
+        JLabel kurs3 = new JLabel("- 1 MYR = Rp 4");
+        kurs3.setAlignmentX(Component.LEFT_ALIGNMENT);
+        JLabel kurs4 = new JLabel("- 1 EUR = Rp 14");
+        kurs4.setAlignmentX(Component.LEFT_ALIGNMENT);
+        
+        middle.add(kurs1);
+        middle.add(kurs2);
+        middle.add(kurs3);
+        middle.add(kurs4);
 
         JPanel right = new JPanel();
         right.setLayout(new BoxLayout(right, BoxLayout.Y_AXIS));
-        right.setBorder(BorderFactory.createTitledBorder("Mata Uang & Kurs"));
-        right.add(new JLabel("Pilih Mata Uang:"));
-        right.add(cbCurrency);
+        right.setBorder(BorderFactory.createTitledBorder("Ringkasan Tagihan"));
+        
+        JLabel lblSumSub = new JLabel("Subtotal: ");
+        lblSumSub.setFont(new Font("Arial", Font.PLAIN, 12));
+        lblSumSub.setAlignmentX(Component.LEFT_ALIGNMENT);
+        
+        JLabel lblSumDisc = new JLabel("Diskon: ");
+        lblSumDisc.setFont(new Font("Arial", Font.PLAIN, 12));
+        lblSumDisc.setAlignmentX(Component.LEFT_ALIGNMENT);
+        
+        JLabel lblSumAdmin = new JLabel("Admin: ");
+        lblSumAdmin.setFont(new Font("Arial", Font.PLAIN, 12));
+        lblSumAdmin.setAlignmentX(Component.LEFT_ALIGNMENT);
+        
+        JLabel lblSumTotal = new JLabel("Tagihan Akhir: ");
+        lblSumTotal.setFont(new Font("Arial", Font.BOLD, 13));
+        lblSumTotal.setForeground(Color.BLUE);
+        lblSumTotal.setAlignmentX(Component.LEFT_ALIGNMENT);
+
         right.add(Box.createVerticalStrut(10));
-        right.add(new JLabel("Kurs Konversi:"));
-        right.add(new JLabel("- 1 USD = Rp 15"));
-        right.add(new JLabel("- 10 JPY = Rp 1"));
-        right.add(new JLabel("- 1 MYR = Rp 4"));
-        right.add(new JLabel("- 1 EUR = Rp 14"));
+        right.add(lblSumSub);
+        right.add(Box.createVerticalStrut(15));
+        right.add(lblSumDisc);
+        right.add(Box.createVerticalStrut(15));
+        right.add(lblSumAdmin);
+        right.add(Box.createVerticalStrut(20));
+        right.add(lblSumTotal);
 
         body.add(left);
+        body.add(middle);
         body.add(right);
         panel.add(body, BorderLayout.CENTER);
-
-        JPanel sumPanel = new JPanel(new GridLayout(3, 1, 5, 5));
-        JLabel lblSumSub = new JLabel("");
-        JLabel lblSumDisc = new JLabel("");
-        JLabel lblSumAdmin = new JLabel("");
-        sumPanel.add(lblSumSub);
-        sumPanel.add(lblSumDisc);
-        sumPanel.add(lblSumAdmin);
-        panel.add(sumPanel, BorderLayout.EAST);
 
         Runnable updateSummary = () -> {
             boolean isTunai = rbTunai.isSelected();
@@ -435,7 +560,8 @@ public class AppGUI {
 
             lblSumSub.setText(String.format("Subtotal: Rp%,.0f (Pajak: Rp%,.0f)", subtotal, tax));
             lblSumDisc.setText(String.format("Diskon Channel/Poin: Rp%,.0f", diskon + potonganPoin));
-            lblSumAdmin.setText(String.format("Biaya Admin: Rp%,.0f | Tagihan Akhir: Rp%,.0f", admin, totalAkhir));
+            lblSumAdmin.setText(String.format("Biaya Admin: Rp%,.0f", admin));
+            lblSumTotal.setText(String.format("Tagihan Akhir: Rp%,.0f", totalAkhir));
 
             if (isTunai) {
                 lblVerif.setText("Pembayaran tunai tidak perlu cek saldo.");
@@ -461,6 +587,7 @@ public class AppGUI {
         rbTunai.addActionListener(listener);
         rbQris.addActionListener(listener);
         rbEmoney.addActionListener(listener);
+        cbCurrency.addActionListener(listener);
         txtSaldo.getDocument().addDocumentListener(new DocumentListener() {
             public void insertUpdate(DocumentEvent e) { updateSummary.run(); }
             public void removeUpdate(DocumentEvent e) { updateSummary.run(); }
@@ -524,8 +651,8 @@ public class AppGUI {
         JPanel panel = new JPanel(new BorderLayout(10, 10));
         panel.setBorder(new EmptyBorder(10, 10, 10, 10));
 
-        JLabel lblHeader = new JLabel("Langkah 5 dari 5: Tagihan & Kuitansi", SwingConstants.CENTER);
-        lblHeader.setFont(new Font("Arial", Font.BOLD, 16));
+        JLabel lblHeader = new JLabel("Kohisop", SwingConstants.CENTER);
+        lblHeader.setFont(new Font("Arial", Font.BOLD, 20));
         panel.add(lblHeader, BorderLayout.NORTH);
 
         KohiSop kohiSop = new KohiSop();
@@ -591,7 +718,11 @@ public class AppGUI {
         summaryPanel.add(new JLabel(String.format("Total Sebelum Pajak: Rp%,.0f", totalHargaLuarPajak)));
         summaryPanel.add(new JLabel(String.format("Pajak: Rp%,.0f | Potongan Poin: Rp%,.0f", totalPajakKeseluruhan, potonganPoin)));
         summaryPanel.add(new JLabel(String.format("Diskon Channel: Rp%,.0f | Admin: Rp%,.0f", diskon, admin)));
-        summaryPanel.add(new JLabel(String.format("TOTAL AKHIR (IDR): Rp%,.0f", totalAkhirIDR)));
+        
+        JLabel lblTotalAkhir = new JLabel(String.format("TOTAL AKHIR (IDR): Rp%,.0f", totalAkhirIDR));
+        lblTotalAkhir.setFont(new Font("Arial", Font.BOLD, 13));
+        lblTotalAkhir.setForeground(Color.BLUE);
+        summaryPanel.add(lblTotalAkhir);
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         PrintStream ps = new PrintStream(baos);
@@ -605,13 +736,9 @@ public class AppGUI {
         System.setOut(oldOut);
         String receiptText = baos.toString();
 
-        JTextArea txtReceipt = new JTextArea(receiptText);
-        txtReceipt.setEditable(false);
-        txtReceipt.setFont(new Font("Consolas", Font.PLAIN, 12));
-
-        JPanel body = new JPanel(new GridLayout(1, 2, 10, 10));
+        JPanel body = new JPanel(new GridBagLayout());
+        summaryPanel.setPreferredSize(new Dimension(450, 320));
         body.add(summaryPanel);
-        body.add(new JScrollPane(txtReceipt));
         panel.add(body, BorderLayout.CENTER);
 
         JPanel footer = new JPanel(new FlowLayout());
@@ -622,57 +749,83 @@ public class AppGUI {
         });
         
         JButton btnCetak = new JButton("Cetak Kuitansi");
-        btnCetak.addActionListener(e -> JOptionPane.showMessageDialog(window, "Kuitansi telah dicetak!"));
+        btnCetak.addActionListener(e -> {
+            JTextArea area = new JTextArea(receiptText);
+            area.setFont(new Font("Consolas", Font.PLAIN, 12));
+            area.setEditable(false);
+            JScrollPane scrollPane = new JScrollPane(area);
+            scrollPane.setPreferredSize(new Dimension(500, 500));
+            
+            Object[] options = {"Selesai", "Tutup"};
+            int selection = JOptionPane.showOptionDialog(
+                window,
+                scrollPane,
+                "Kohisop",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.INFORMATION_MESSAGE,
+                null,
+                options,
+                options[0]
+            );
 
-        JButton btnSelesai = new JButton("Selesai");
-        btnSelesai.addActionListener(e -> {
-            if (activeMemberBaru) {
-                KohiSop.daftarMemberBaru(activeMember);
-            } else {
-                KohiSop.saveDatabaseMember();
-            }
-
-            // dapur
-            jumlahPelanggan++;
-            dapur.tambahPesanan(kohiSop.getDaftarPesanan());
-
-            if (jumlahPelanggan % 3 != 0) {
-                JOptionPane.showMessageDialog(window,
-                    String.format("Tim dapur menunggu pesanan lainnya... (%d/3 pesanan)", jumlahPelanggan % 3));
-            } else {
-                int choice = JOptionPane.showConfirmDialog(window,
-                    "Pesanan 3 pelanggan sudah terkumpul!\nLihat proses tim dapur?",
-                    "Proses Tim Dapur",
-                    JOptionPane.YES_NO_OPTION);
-                if (choice == JOptionPane.YES_OPTION) {
-                    ByteArrayOutputStream baosDapur = new ByteArrayOutputStream();
-                    PrintStream psDapur = new PrintStream(baosDapur);
-                    PrintStream oldOutDapur = System.out;
-                    System.setOut(psDapur);
-                    
-                    dapur.prosesPesanan();
-                    
-                    System.out.flush();
-                    System.setOut(oldOutDapur);
-                    String dapurText = baosDapur.toString();
-
-                    JTextArea txtDapur = new JTextArea(dapurText);
-                    txtDapur.setEditable(false);
-                    txtDapur.setFont(new Font("Consolas", Font.PLAIN, 12));
-                    JScrollPane scroll = new JScrollPane(txtDapur);
-                    scroll.setPreferredSize(new Dimension(600, 400));
-                    JOptionPane.showMessageDialog(window, scroll, "Tim Dapur KohiSop", JOptionPane.INFORMATION_MESSAGE);
+            if (selection == 0) { // Selesai clicked!
+                if (activeMemberBaru) {
+                    KohiSop.daftarMemberBaru(activeMember);
+                } else {
+                    KohiSop.saveDatabaseMember();
                 }
-                dapur.kosongkanAntrian();
-            }
 
-            resetOrder();
-            showStep(1);
+                // dapur
+                jumlahPelanggan++;
+                dapur.tambahPesanan(kohiSop.getDaftarPesanan());
+
+                if (jumlahPelanggan % 3 != 0) {
+                    JOptionPane.showMessageDialog(window,
+                        String.format("Tim dapur menunggu pesanan lainnya... (%d/3 pesanan)", jumlahPelanggan % 3));
+                } else {
+                    int choice = JOptionPane.showConfirmDialog(window,
+                        "Pesanan 3 pelanggan sudah terkumpul!\nLihat proses tim dapur?",
+                        "Proses Tim Dapur",
+                        JOptionPane.YES_NO_OPTION);
+                    if (choice == JOptionPane.YES_OPTION) {
+                        ByteArrayOutputStream baosDapur = new ByteArrayOutputStream();
+                        PrintStream psDapur = new PrintStream(baosDapur);
+                        PrintStream oldOutDapur = System.out;
+                        System.setOut(psDapur);
+                        
+                        dapur.prosesPesanan();
+                        
+                        System.out.flush();
+                        System.setOut(oldOutDapur);
+                        String dapurText = baosDapur.toString();
+
+                        JTextArea txtDapur = new JTextArea(dapurText);
+                        txtDapur.setEditable(false);
+                        txtDapur.setFont(new Font("Consolas", Font.PLAIN, 12));
+                        JScrollPane scroll = new JScrollPane(txtDapur);
+                        scroll.setPreferredSize(new Dimension(600, 400));
+                        JOptionPane.showMessageDialog(window, scroll, "Tim Dapur KohiSop", JOptionPane.INFORMATION_MESSAGE);
+                    }
+                    dapur.kosongkanAntrian();
+                }
+
+                int nextChoice = JOptionPane.showConfirmDialog(window,
+                    "Apakah Anda ingin memulai transaksi baru?",
+                    "Kohisop",
+                    JOptionPane.YES_NO_OPTION);
+                
+                if (nextChoice == JOptionPane.NO_OPTION) {
+                    JOptionPane.showMessageDialog(window, "Terima kasih telah menggunakan KohiSop!");
+                    System.exit(0);
+                }
+
+                resetOrder();
+                showStep(1);
+            }
         });
 
         footer.add(btnBack);
         footer.add(btnCetak);
-        footer.add(btnSelesai);
         panel.add(footer, BorderLayout.SOUTH);
 
         return panel;
