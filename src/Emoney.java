@@ -11,7 +11,7 @@ public class Emoney implements ChannelPembayaran{
 
     @Override
     public double getBiayaAdmin() {
-        return 2000.0; // biaya administrasi tetap 2000 IDR
+        return 20.0; // biaya administrasi tetap 20 IDR
     }
 
     @Override

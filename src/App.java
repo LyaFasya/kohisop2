@@ -23,7 +23,7 @@ public class App {
             System.out.println("Anda belum terdaftar sebagai member.");
             System.out.println("Anda akan otomatis terdaftar sebagai member baru setelah transaksi selesai!\n");
             memberBaru = true;
-            // Generate unique code
+            // generate random kode
             String kodeBaru;
             while (true) {
                 kodeBaru = Member.generateRandomCode();
@@ -244,7 +244,7 @@ public class App {
         System.out.println("\n[Pilih Channel Pembayaran]");
         System.out.println("1. Tunai (Tanpa diskon)");
         System.out.println("2. QRIS (Diskon 5%)");
-        System.out.println("3. eMoney (Diskon 7%, Biaya Admin 2000 IDR)");
+        System.out.println("3. eMoney (Diskon 7%, Biaya Admin 20 IDR)");
 
         ChannelPembayaran channel = null;
         while (channel == null) {
@@ -275,7 +275,18 @@ public class App {
         if (channel.butuhCekSaldo()) {
             double diskon = channel.hitungDiskon(totalSementara);
             double admin = channel.getBiayaAdmin();
-            double totalAkhir = totalSementara - diskon + admin;
+            double totalSebelumPoin = totalSementara - diskon + admin;
+            double potonganPoin = 0;
+            if (!memberBaru) {
+                int poinSebelum = member.getPoin();
+                double nilaiPoin = poinSebelum * 2.0;
+                if (nilaiPoin >= totalSebelumPoin) {
+                    potonganPoin = totalSebelumPoin;
+                } else {
+                    potonganPoin = nilaiPoin;
+                }
+            }
+            double totalAkhir = totalSebelumPoin - potonganPoin;
 
             boolean saldoCukup = false;
             while (!saldoCukup) {

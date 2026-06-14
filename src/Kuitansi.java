@@ -55,19 +55,35 @@ public class Kuitansi {
 
         double diskon = channel.hitungDiskon(totalHargaDenganPajak);
         double admin = channel.getBiayaAdmin();
-        double totalAkhirIDR = totalHargaDenganPajak - diskon + admin;
+        double totalSebelumPoin = totalHargaDenganPajak - diskon + admin;
+
+        int poinSebelum = member.getPoin();
+        int poinYangDigunakan = 0;
+        double potonganPoin = 0;
+
+        if (sudahMember) {
+            double nilaiPoin = poinSebelum * 2.0;
+            if (nilaiPoin >= totalSebelumPoin) {
+                potonganPoin = totalSebelumPoin;
+                poinYangDigunakan = (int) Math.ceil(totalSebelumPoin / 2.0);
+            } else {
+                potonganPoin = nilaiPoin;
+                poinYangDigunakan = poinSebelum;
+            }
+        }
+
+        double totalAkhirIDR = totalSebelumPoin - potonganPoin;
 
         double totalAkhirKonversi = mataUang.konversiDariIDR(totalAkhirIDR);
         double totalLuarPajakKonversi = mataUang.konversiDariIDR(totalHargaLuarPajak);
 
         // hitung poin member
-        int poinSebelum = member.getPoin();
         int poinDiperoleh = (int) (totalAkhirIDR / 10);
         boolean doublePoin = member.getKode().toUpperCase().contains("A");
         if (doublePoin) {
             poinDiperoleh *= 2;
         }
-        member.tambahPoin(poinDiperoleh);
+        member.setPoin(poinSebelum - poinYangDigunakan + poinDiperoleh);
         int poinSetelah = member.getPoin();
 
         System.out.println("-------------------------------------------------------");
@@ -77,6 +93,9 @@ public class Kuitansi {
         System.out.println("-------------------------------------------------------");
         System.out.printf("%-36s : Rp %,12.0f%n", "Diskon (" + channel.getNama() + ")", diskon);
         System.out.printf("%-36s : Rp %,12.0f%n", "Biaya Admin", admin);
+        if (sudahMember && potonganPoin > 0) {
+            System.out.printf("%-36s : Rp %,12.0f%n", "Pemotongan Poin (" + poinYangDigunakan + " poin)", potonganPoin);
+        }
         System.out.println("-------------------------------------------------------");
         
         // total tagihan awal
@@ -87,6 +106,9 @@ public class Kuitansi {
         // poin member
         System.out.printf("%-36s : %s (Kode: %s)%n", "Nama Member", member.getNama(), member.getKode());
         System.out.printf("%-36s : %d%n", "Poin Sebelum Transaksi", poinSebelum);
+        if (poinYangDigunakan > 0) {
+            System.out.printf("%-36s : %d%n", "Poin Digunakan", poinYangDigunakan);
+        }
         System.out.printf("%-36s : %d%n", "Poin Diperoleh", poinDiperoleh);
         if (doublePoin) {
             System.out.printf("%-36s : %s%n", "", "(Poin digandakan karena kode mengandung 'A')");
