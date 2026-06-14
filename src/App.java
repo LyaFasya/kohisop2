@@ -383,24 +383,42 @@ public class App {
         // cetak kuitansi
         Kuitansi.cetak(kohiSop, channel, mataUang, member);
 
-        jumlahPelanggan++;
-        dapur.tambahPesanan(kohiSop.getDaftarPesanan());
-        if(jumlahPelanggan % 3 != 0){
+       jumlahPelanggan++;
+       dapur.tambahPesanan(kohiSop.getDaftarPesanan());
 
-        System.out.printf(
-        "\nTim dapur menunggu pesanan lainnya... (%d/3 pesanan)\n",
-        jumlahPelanggan % 3
+       if (jumlahPelanggan % 3 != 0) {
+
+       System.out.printf(
+         "\nTim dapur menunggu pesanan lainnya... (%d/3 pesanan)\n",
+         jumlahPelanggan % 3
     );
-}
-        else{
 
-        System.out.println("\nMemuat proses pesanan...\n");
+    } else {
+
+    System.out.println(
+        "\n==================================================");
+    System.out.println(
+        "Pesanan 3 pelanggan sudah terkumpul!");
+    System.out.println(
+        "==================================================");
+
+    System.out.print(
+        "Lihat proses tim dapur? (Y/N): ");
+
+    String lihat =
+            sc.nextLine().trim().toUpperCase();
+
+    if (lihat.equals("Y")) {
+
+        System.out.println(
+            "\nMemuat proses pesanan...\n");
 
         dapur.prosesPesanan();
+    }
 
-        dapur.kosongkanAntrian();
+    dapur.kosongkanAntrian();
 
-        nomorBatch++;
+    nomorBatch++;
 }
 
     if (memberBaru) {
@@ -409,6 +427,22 @@ public class App {
     KohiSop.saveDatabaseMember();
 
        }
+       System.out.println();
+       System.out.println("Tekan ENTER untuk memulai pesanan baru");
+       System.out.println("atau ketik 'X' untuk keluar.");
+
+        String pilihan =
+        sc.nextLine().trim().toUpperCase();
+
+    if (pilihan.equals("X")) {
+
+    System.out.println(
+        "\nTerima kasih telah menggunakan KohiSop!");
+
+    break; 
+
+
+      }
     }
-}
+  }
 }
