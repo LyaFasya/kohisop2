@@ -134,7 +134,7 @@ public class App {
             System.out.println();
             kohiSop.tampilkanTabelPesanan();
 
-            System.out.printf("Kuantitas [%s] %s (maks %d, default 1): ",
+            System.out.printf("Kuantitas [%s] %s (maks %d) | Enter=1, 0/S=skip, CC=batal: ",
                     menu.getKode(), menu.getNamaMenu(), maxQty);
             String inputQty = sc.nextLine().trim();
 
@@ -248,88 +248,6 @@ public class App {
         System.out.printf("Total Pajak   : Rp %,.0f%n", totalPajak);
         System.out.printf("Total Tagihan : Rp %,.0f%n", totalSementara);
 
-        // pilih channel pembayaran
-        System.out.println("\n[Pilih Channel Pembayaran]");
-        System.out.println("1. Tunai (Tanpa diskon)");
-        System.out.println("2. QRIS (Diskon 5%)");
-        System.out.println("3. eMoney (Diskon 7%, Biaya Admin 20 IDR)");
-
-        ChannelPembayaran channel = null;
-        while (channel == null) {
-            System.out.print("Pilihan (1/2/3), Enter untuk Tunai (default), atau 'CC' untuk batal: ");
-            String inputChannel = sc.nextLine().trim().toUpperCase();
-
-            if (inputChannel.equals("CC")) {
-                System.out.println("Pesanan dibatalkan.");
-                return;
-            }
-
-            if (inputChannel.isEmpty()) {
-                channel = new Tunai();
-                System.out.println("=> Channel Pembayaran set Tunai");
-                break;
-            }
-
-            switch (inputChannel) {
-                case "1":
-                    channel = new Tunai();
-                    System.out.println("=> Channel Pembayaran set Tunai");
-                    break;
-                case "2":
-                    channel = new QRIS();
-                    System.out.println("=> Channel Pembayaran set QRIS");
-                    break;
-                case "3":
-                    channel = new Emoney();
-                    System.out.println("=> Channel Pembayaran set eMoney");
-                    break;
-                default:
-                    System.out.println("Pilihan tidak valid.");
-            }
-        }
-
-        // cek saldo jika perlu
-        if (channel.butuhCekSaldo()) {
-            double diskon = channel.hitungDiskon(totalSementara);
-            double admin = channel.getBiayaAdmin();
-            double totalSebelumPoin = totalSementara - diskon + admin;
-            double potonganPoin = 0;
-            if (!memberBaru) {
-                int poinSebelum = member.getPoin();
-                double nilaiPoin = poinSebelum * 2.0;
-                if (nilaiPoin >= totalSebelumPoin) {
-                    potonganPoin = totalSebelumPoin;
-                } else {
-                    potonganPoin = nilaiPoin;
-                }
-            }
-            double totalAkhir = totalSebelumPoin - potonganPoin;
-
-            boolean saldoCukup = false;
-            while (!saldoCukup) {
-                System.out.printf("Total tagihan akhir Anda: Rp %,.0f.%n", totalAkhir);
-                System.out.print("Masukkan jumlah saldo Anda (atau 'CC' untuk batal): ");
-                String inputSaldo = sc.nextLine().trim().toUpperCase();
-
-                if (inputSaldo.equals("CC")) {
-                    System.out.println("Pesanan dibatalkan.");
-                    return;
-                }
-
-                try {
-                    double saldo = Double.parseDouble(inputSaldo);
-                    if (saldo < totalAkhir) {
-                        System.out.println("Saldo tidak mencukupi!");
-                    } else {
-                        System.out.println("=> Saldo mencukupi. Memproses pembayaran...");
-                        saldoCukup = true;
-                    }
-                } catch (NumberFormatException e) {
-                    System.out.println("Harap masukkan angka yang valid.");
-                }
-            }
-        }
-
         // pilih mata uang
         System.out.println("\nPilih Mata Uang Pembayaran");
         System.out.println("1. IDR (Default)");
@@ -377,6 +295,94 @@ public class App {
                     break;
                 default:
                     System.out.println("Pilihan tidak valid.");
+            }
+        }
+
+        // pilih channel pembayaran
+        System.out.println("\n[Pilih Channel Pembayaran]");
+        System.out.println("1. Tunai (Tanpa diskon)");
+        System.out.println("2. QRIS (Diskon 5%)");
+        System.out.println("3. eMoney (Diskon 7%, Biaya Admin 20 IDR)");
+
+        ChannelPembayaran channel = null;
+        while (channel == null) {
+            System.out.print("Pilihan (1/2/3), Enter untuk Tunai (default), atau 'CC' untuk batal: ");
+            String inputChannel = sc.nextLine().trim().toUpperCase();
+
+            if (inputChannel.equals("CC")) {
+                System.out.println("Pesanan dibatalkan.");
+                return;
+            }
+
+            if (inputChannel.isEmpty()) {
+                channel = new Tunai();
+                System.out.println("=> Channel Pembayaran set Tunai");
+                break;
+            }
+
+            switch (inputChannel) {
+                case "1":
+                    channel = new Tunai();
+                    System.out.println("=> Channel Pembayaran set Tunai");
+                    break;
+                case "2":
+                    channel = new QRIS();
+                    System.out.println("=> Channel Pembayaran set QRIS");
+                    break;
+                case "3":
+                    channel = new Emoney();
+                    System.out.println("=> Channel Pembayaran set eMoney");
+                    break;
+                default:
+                    System.out.println("Pilihan tidak valid.");
+            }
+        }
+
+        // cek saldo jika perlu
+        if (channel.butuhCekSaldo()) {
+            double diskon = channel.hitungDiskon(totalSementara);
+            double admin = channel.getBiayaAdmin();
+            double totalSebelumPoin = totalSementara - diskon + admin;
+            double potonganPoin = 0;
+            if (!memberBaru && mataUang.getKode().equals("IDR")) {
+                int poinSebelum = member.getPoin();
+                double nilaiPoin = poinSebelum * 2.0;
+                if (nilaiPoin >= totalSebelumPoin) {
+                    potonganPoin = totalSebelumPoin;
+                } else {
+                    potonganPoin = nilaiPoin;
+                }
+            }
+            double totalAkhirIDR = totalSebelumPoin - potonganPoin;
+            double totalAkhirKonversi = mataUang.konversiDariIDR(totalAkhirIDR);
+
+            boolean saldoCukup = false;
+            while (!saldoCukup) {
+                if (mataUang.getKode().equals("IDR")) {
+                    System.out.printf("Total tagihan akhir Anda: Rp %,.0f.%n", totalAkhirIDR);
+                } else {
+                    System.out.printf("Total tagihan akhir Anda: %s %,.2f.%n", mataUang.getKode(), totalAkhirKonversi);
+                }
+                System.out.print("Masukkan jumlah saldo Anda (atau 'CC' untuk batal): ");
+                String inputSaldo = sc.nextLine().trim().toUpperCase();
+
+                if (inputSaldo.equals("CC")) {
+                    System.out.println("Pesanan dibatalkan.");
+                    return;
+                }
+
+                try {
+                    double saldo = Double.parseDouble(inputSaldo);
+                    double targetTotal = mataUang.getKode().equals("IDR") ? totalAkhirIDR : totalAkhirKonversi;
+                    if (saldo < targetTotal) {
+                        System.out.println("Saldo tidak mencukupi!");
+                    } else {
+                        System.out.println("=> Saldo mencukupi. Memproses pembayaran...");
+                        saldoCukup = true;
+                    }
+                } catch (NumberFormatException e) {
+                    System.out.println("Harap masukkan angka yang valid.");
+                }
             }
         }
 
