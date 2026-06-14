@@ -29,6 +29,9 @@ javac -d bin src/*.java
 java -cp bin App
 ```
 
-## Teknologi
+## Anggota Kelompok
 
-- Java (OOP, Abstract Class, Interface, Polymorphism)
+- Rizkya Dwi Aulya Fasya - 255150401111025
+- Muhammad Naufal Alfarrel - 255150400111035
+- Ciello Anryfa Ramadhan Siregar - 255150407111011
+- M. Furqanurrahman - 255150401111029
