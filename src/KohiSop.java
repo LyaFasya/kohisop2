@@ -91,6 +91,10 @@ public class KohiSop {
         return DATABASE_MEMBER;
     }
 
+    public static List<Menu> getDaftarMenu() {
+        return DAFTAR_MENU;
+    }
+
     public static Member cariMember(String nama) {
         for (Member m : DATABASE_MEMBER) {
             if (m.getNama().equalsIgnoreCase(nama)) {
