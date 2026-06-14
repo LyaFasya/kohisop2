@@ -20,9 +20,11 @@ class Dapur {
         for (ItemPesanan item : daftarPesanan) {
 
             if (item.getMenu() instanceof Makanan) {
+
                 antrianMakanan.offer(item);
 
             } else if (item.getMenu() instanceof Minuman) {
+
                 antrianMinuman.push(item);
             }
         }
@@ -37,6 +39,7 @@ class Dapur {
                 new ArrayList<>();
 
         while (!tempQueue.isEmpty()) {
+
             daftarMakanan.add(tempQueue.poll());
         }
 
@@ -48,30 +51,44 @@ class Dapur {
         ArrayList<ItemPesanan> daftarMinuman =
                 new ArrayList<>();
 
-        Stack<ItemPesanan> tempStack =
-                new Stack<>();
+        for (int i = antrianMinuman.size() - 1;
+             i >= 0;
+             i--) {
 
-        while (!antrianMinuman.isEmpty()) {
-            tempStack.push(antrianMinuman.pop());
-        }
-
-        while (!tempStack.isEmpty()) {
-
-            ItemPesanan item = tempStack.pop();
-
-            daftarMinuman.add(item);
-
-            antrianMinuman.push(item);
+            daftarMinuman.add(
+                    antrianMinuman.get(i));
         }
 
         return daftarMinuman;
     }
 
     public void prosesPesanan() {
+        
 
-        System.out.println("\n=== PROSES DAPUR ===");
+        System.out.println(
+                "\n======================== TIM DAPUR KOHISOP =======================");
 
-        System.out.println("\nTim Makanan:");
+        System.out.println(
+                "                       URUTAN PROSES PESANAN");
+
+        System.out.println(
+                "------------------------------------------------------------------");
+
+        System.out.println(
+            
+                "\nANTRIAN PROSES MAKANAN :");
+
+        System.out.println(
+                "------------------------------------------------------------------");
+
+        System.out.printf(
+                "%-5s | %-30s | %-10s | Qty%n",
+                "Kode",
+                "Nama",
+                "Harga");
+
+        System.out.println(
+                "------------------------------------------------------------------");
 
         ArrayList<ItemPesanan> makananList =
                 getAntrianMakanan();
@@ -83,20 +100,41 @@ class Dapur {
 
         } else {
 
-            int no = 1;
-
             for (ItemPesanan item : makananList) {
 
                 System.out.printf(
-                        "%d. %s - %dx - Rp%,d%n",
-                        no++,
+                        "%-5s | %-30s | Rp %-8d | %d porsi%n",
+
+                        item.getMenu().getKode(),
+
                         item.getMenu().getNamaMenu(),
-                        item.getKuantitas(),
-                        item.getMenu().getHarga());
+
+                        item.getMenu().getHarga(),
+
+                        item.getKuantitas());
             }
         }
 
-        System.out.println("\nTim Minuman:");
+        System.out.println(
+                "------------------------------------------------------------------");
+
+        System.out.println(
+                "\nANTRIAN PROSES MINUMAN :");
+
+        System.out.println(
+                "------------------------------------------------------------------");
+
+        System.out.printf(
+                "%-5s | %-35s | %-10s | Qty%n",
+
+                "Kode",
+
+                "Nama",
+
+                "Harga");
+
+        System.out.println(
+                "------------------------------------------------------------------");
 
         ArrayList<ItemPesanan> minumanList =
                 getAntrianMinuman();
@@ -108,23 +146,29 @@ class Dapur {
 
         } else {
 
-            int no = 1;
-
             for (ItemPesanan item : minumanList) {
 
                 System.out.printf(
-                        "%d. %s - %dx - Rp%,d%n",
-                        no++,
+                        "%-5s | %-35s | Rp %-7d | %d porsi%n",
+
+                        item.getMenu().getKode(),
+
                         item.getMenu().getNamaMenu(),
-                        item.getKuantitas(),
-                        item.getMenu().getHarga());
+
+                        item.getMenu().getHarga(),
+
+                        item.getKuantitas());
             }
         }
+
+        System.out.println(
+                "------------------------------------------------------------------");
     }
 
     public void kosongkanAntrian() {
 
         antrianMakanan.clear();
+
         antrianMinuman.clear();
     }
 }

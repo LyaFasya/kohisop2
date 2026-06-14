@@ -2,11 +2,18 @@ import java.util.Scanner;
 
 public class App {
     private static final Scanner sc = new Scanner(System.in);
+    private static Dapur dapur = new Dapur();
+    private static int jumlahPelanggan = 0;
+    private static int nomorBatch = 1;
+    private static int idPesanan = 1;
+
 
     public static void main(String[] args) {
+        while (true) {
         System.out.println("==========================================================");
         System.out.println("                Selamat Datang di KohiSop!                ");
         System.out.println("==========================================================");
+
 
         System.out.print("Masukkan nama Anda: ");
         String namaPelanggan = sc.nextLine().trim();
@@ -376,14 +383,25 @@ public class App {
         // cetak kuitansi
         Kuitansi.cetak(kohiSop, channel, mataUang, member);
 
-        // =========================
-       // PROSES PESANAN TIM DAPUR
-      // =========================
-    Dapur Dapur = new Dapur();
+        jumlahPelanggan++;
+        dapur.tambahPesanan(kohiSop.getDaftarPesanan());
+        if(jumlahPelanggan % 3 != 0){
 
-    Dapur.tambahPesanan(kohiSop.getDaftarPesanan());
+        System.out.printf(
+        "\nTim dapur menunggu pesanan lainnya... (%d/3 pesanan)\n",
+        jumlahPelanggan % 3
+    );
+}
+        else{
 
-    Dapur.prosesPesanan();
+        System.out.println("\nMemuat proses pesanan...\n");
+
+        dapur.prosesPesanan();
+
+        dapur.kosongkanAntrian();
+
+        nomorBatch++;
+}
 
     if (memberBaru) {
     KohiSop.daftarMemberBaru(member);
@@ -392,4 +410,5 @@ public class App {
 
        }
     }
+}
 }
