@@ -34,7 +34,8 @@ public class App {
                         break;
                     }
                 }
-                if (!exists) break;
+                if (!exists)
+                    break;
             }
             member = new Member(kodeBaru, namaPelanggan, 0);
         }
@@ -218,20 +219,20 @@ public class App {
             int totalHargaItem = ip.getTotalHarga();
             double pajak = ip.getPajak();
             double subtotal = ip.getTotalDenganPajak();
-            
+
             int persen = (totalHargaItem > 0) ? (int) Math.round(Math.abs(pajak) / totalHargaItem * 100) : 0;
 
             if (pajak < 0) {
                 System.out.printf("- %s (x%d) : Rp %,d - Diskon %d%% Rp %,.0f = Rp %,.0f%n",
-                    m.getNamaMenu(), qty, totalHargaItem, persen, -pajak, subtotal);
+                        m.getNamaMenu(), qty, totalHargaItem, persen, -pajak, subtotal);
             } else if (pajak > 0) {
                 System.out.printf("- %s (x%d) : Rp %,d + Pajak %d%% Rp %,.0f = Rp %,.0f%n",
-                    m.getNamaMenu(), qty, totalHargaItem, persen, pajak, subtotal);
+                        m.getNamaMenu(), qty, totalHargaItem, persen, pajak, subtotal);
             } else {
                 System.out.printf("- %s (x%d) : Rp %,d (Bebas Pajak)%n",
-                    m.getNamaMenu(), qty, totalHargaItem);
+                        m.getNamaMenu(), qty, totalHargaItem);
             }
-            
+
             totalPajak += pajak;
             totalSementara += subtotal;
         }
@@ -248,7 +249,7 @@ public class App {
 
         ChannelPembayaran channel = null;
         while (channel == null) {
-            System.out.print("Pilihan (1/2/3) atau 'CC' untuk batal: ");
+            System.out.print("Pilihan (1/2/3), Enter untuk Tunai (default), atau 'CC' untuk batal: ");
             String inputChannel = sc.nextLine().trim().toUpperCase();
 
             if (inputChannel.equals("CC")) {
@@ -256,15 +257,24 @@ public class App {
                 return;
             }
 
+            if (inputChannel.isEmpty()) {
+                channel = new Tunai();
+                System.out.println("=> Channel Pembayaran set Tunai");
+                break;
+            }
+
             switch (inputChannel) {
                 case "1":
                     channel = new Tunai();
+                    System.out.println("=> Channel Pembayaran set Tunai");
                     break;
                 case "2":
                     channel = new QRIS();
+                    System.out.println("=> Channel Pembayaran set QRIS");
                     break;
                 case "3":
                     channel = new Emoney();
+                    System.out.println("=> Channel Pembayaran set eMoney");
                     break;
                 default:
                     System.out.println("Pilihan tidak valid.");
@@ -312,7 +322,7 @@ public class App {
                 }
             }
         }
-        
+
         // pilih mata uang
         System.out.println("\nPilih Mata Uang Pembayaran");
         System.out.println("1. IDR (Default)");
@@ -323,7 +333,7 @@ public class App {
 
         MataUang mataUang = null;
         while (mataUang == null) {
-            System.out.print("Pilihan (1-5) atau 'CC' untuk batal: ");
+            System.out.print("Pilihan (1-5), Enter untuk IDR (default), atau 'CC' untuk batal: ");
             String inputUang = sc.nextLine().trim().toUpperCase();
 
             if (inputUang.equals("CC")) {
@@ -331,21 +341,32 @@ public class App {
                 return;
             }
 
+            if (inputUang.isEmpty()) {
+                mataUang = new IDR();
+                System.out.println("=> Mata Uang set IDR");
+                break;
+            }
+
             switch (inputUang) {
                 case "1":
                     mataUang = new IDR();
+                    System.out.println("=> Mata Uang set IDR");
                     break;
                 case "2":
                     mataUang = new USD();
+                    System.out.println("=> Mata Uang set USD");
                     break;
                 case "3":
                     mataUang = new JPY();
+                    System.out.println("=> Mata Uang set JPY");
                     break;
                 case "4":
                     mataUang = new MYR();
+                    System.out.println("=> Mata Uang set MYR");
                     break;
                 case "5":
                     mataUang = new EUR();
+                    System.out.println("=> Mata Uang set EUR");
                     break;
                 default:
                     System.out.println("Pilihan tidak valid.");
@@ -356,6 +377,8 @@ public class App {
         Kuitansi.cetak(kohiSop, channel, mataUang, member);
         if (memberBaru) {
             KohiSop.daftarMemberBaru(member);
+        } else {
+            KohiSop.saveDatabaseMember();
         }
     }
 }

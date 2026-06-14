@@ -37,9 +37,51 @@ public class KohiSop {
 
     // database member
     private static final List<Member> DATABASE_MEMBER = new ArrayList<>();
+    private static final String FILE_MEMBER = "member.txt";
+
     static {
-        DATABASE_MEMBER.add(new Member("A23FB9", "Budi", 150));
-        DATABASE_MEMBER.add(new Member("C78DE1", "Andi", 50));
+        loadDatabaseMember();
+    }
+
+    public static void loadDatabaseMember() {
+        DATABASE_MEMBER.clear();
+        java.io.File file = new java.io.File(FILE_MEMBER);
+        if (!file.exists()) {
+            DATABASE_MEMBER.add(new Member("A23FB9", "Budi", 150));
+            DATABASE_MEMBER.add(new Member("C78DE1", "Andi", 50));
+            saveDatabaseMember();
+            return;
+        }
+
+        try (java.io.BufferedReader br = new java.io.BufferedReader(new java.io.FileReader(file))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                line = line.trim();
+                if (line.isEmpty())
+                    continue;
+                String[] parts = line.split(",");
+                if (parts.length == 3) {
+                    String kode = parts[0].trim();
+                    String nama = parts[1].trim();
+                    int poin = Integer.parseInt(parts[2].trim());
+                    DATABASE_MEMBER.add(new Member(kode, nama, poin));
+                }
+            }
+        } catch (java.io.IOException | NumberFormatException e) {
+            DATABASE_MEMBER.clear();
+            DATABASE_MEMBER.add(new Member("A23FB9", "Budi", 150));
+            DATABASE_MEMBER.add(new Member("C78DE1", "Andi", 50));
+        }
+    }
+
+    public static void saveDatabaseMember() {
+        try (java.io.PrintWriter pw = new java.io.PrintWriter(new java.io.FileWriter(FILE_MEMBER))) {
+            for (Member m : DATABASE_MEMBER) {
+                pw.println(m.getKode() + "," + m.getNama() + "," + m.getPoin());
+            }
+        } catch (java.io.IOException e) {
+            System.err.println("Gagal menyimpan database member: " + e.getMessage());
+        }
     }
 
     public static final int MAX_JENIS_PER_KATEGORI = 5;
@@ -60,6 +102,7 @@ public class KohiSop {
 
     public static void daftarMemberBaru(Member m) {
         DATABASE_MEMBER.add(m);
+        saveDatabaseMember();
     }
 
     public static boolean isKodeValid(String kode) {
@@ -161,7 +204,8 @@ public class KohiSop {
 
     // tabel pesanan untuk isi kuantitas
     public void tampilkanTabelPesanan() {
-        if (pesanan.isEmpty()) return;
+        if (pesanan.isEmpty())
+            return;
         String garis = "-".repeat(65);
 
         // makanan
@@ -179,10 +223,10 @@ public class KohiSop {
             for (ItemPesanan ip : pesanan) {
                 if (ip.getMenu() instanceof Makanan) {
                     System.out.printf("%-4s | %-33s | Rp %,8d | %d%n",
-                        ip.getMenu().getKode(),
-                        ip.getMenu().getNamaMenu(),
-                        ip.getMenu().getHarga(),
-                        ip.getKuantitas());
+                            ip.getMenu().getKode(),
+                            ip.getMenu().getNamaMenu(),
+                            ip.getMenu().getHarga(),
+                            ip.getKuantitas());
                 }
             }
         }
@@ -202,10 +246,10 @@ public class KohiSop {
             for (ItemPesanan ip : pesanan) {
                 if (ip.getMenu() instanceof Minuman) {
                     System.out.printf("%-4s | %-33s | Rp %,8d | %d%n",
-                        ip.getMenu().getKode(),
-                        ip.getMenu().getNamaMenu(),
-                        ip.getMenu().getHarga(),
-                        ip.getKuantitas());
+                            ip.getMenu().getKode(),
+                            ip.getMenu().getNamaMenu(),
+                            ip.getMenu().getHarga(),
+                            ip.getKuantitas());
                 }
             }
         }
