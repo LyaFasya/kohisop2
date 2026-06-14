@@ -76,7 +76,7 @@ class Dapur {
 
         System.out.println(
             
-                "\nANTRIAN PROSES MAKANAN :");
+                "\nANTRIAN PROSES MAKANAN (Prioritas Harga) :");
 
         System.out.println(
                 "------------------------------------------------------------------");
@@ -119,7 +119,7 @@ class Dapur {
                 "------------------------------------------------------------------");
 
         System.out.println(
-                "\nANTRIAN PROSES MINUMAN :");
+                "\nANTRIAN PROSES MINUMAN (Lasr ) : ");
 
         System.out.println(
                 "------------------------------------------------------------------");
