@@ -1,18 +1,34 @@
-## Getting Started
+# KohiSop
 
-Welcome to the VS Code Java world. Here is a guideline to help you get started to write Java code in Visual Studio Code.
+Aplikasi kasir sederhana berbasis CLI untuk kedai kopi dan makanan, dibuat menggunakan Java.
 
-## Folder Structure
+## Fitur
 
-The workspace contains two folders by default, where:
+- Pemesanan minuman dan makanan (maks 5 jenis per kategori)
+- Perhitungan pajak otomatis per item
+- Sistem member dengan kode unik dan poin reward
+- Pembayaran dengan 3 channel: Tunai, QRIS, eMoney
+- Dukungan multi mata uang: IDR, USD, JPY, MYR, EUR
+- Pemotongan poin hanya berlaku untuk pembayaran IDR
+- Cetak kuitansi lengkap
+- Sistem antrian dapur per batch 3 pelanggan
 
-- `src`: the folder to maintain sources
-- `lib`: the folder to maintain dependencies
+## Struktur Folder
 
-Meanwhile, the compiled output files will be generated in the `bin` folder by default.
+- `src/` — source code Java
+- `bin/` — hasil kompilasi
+- `member.txt` — database member
 
-> If you want to customize the folder structure, open `.vscode/settings.json` and update the related settings there.
+## Cara Menjalankan
 
-## Dependency Management
+```bash
+# Kompilasi
+javac -d bin src/*.java
 
-The `JAVA PROJECTS` view allows you to manage your dependencies. More details can be found [here](https://github.com/microsoft/vscode-java-dependency#manage-dependencies).
+# Jalankan
+java -cp bin App
+```
+
+## Teknologi
+
+- Java (OOP, Abstract Class, Interface, Polymorphism)
